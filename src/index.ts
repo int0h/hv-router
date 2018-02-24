@@ -1,6 +1,6 @@
 import {HyperValue, scopes} from 'hv';
 import {Component, Children, jsx} from 'hv-jsx';
-import {RouterCore as BaseRouter, Route, RouteView, route as baseRoute, RouteData, Data, RouterConfig, handleHistory} from 'router-core';
+import {RouterCore as BaseRouter, Route, RouteView, route as baseRoute, RouteData, Data, RouteTable, handleHistory, RouterConfig} from 'router-core';
 
 export type RouteComponentProps = {routeData: HyperValue<Data<string>>, routeName: string};
 
@@ -16,7 +16,7 @@ export function route(pattern: any, config: RouteData<string> & Meta): Route<str
     return route;
 }
 
-export class Router<R extends RouterConfig<Meta>> extends BaseRouter<Meta, R> {
+export class Router<R extends RouteTable<Meta>> extends BaseRouter<Meta, R> {
     hs = new scopes.ObjectScope();
     routeData: HyperValue<Data<string>>;
     routeName: HyperValue<string>;
@@ -28,8 +28,8 @@ export class Router<R extends RouterConfig<Meta>> extends BaseRouter<Meta, R> {
         return jsx(this.routes[routeName].meta.component as any, {routeName, routeData});
     }
 
-    constructor(routes: R) {
-        super(routes);
+    constructor(cfg: RouterConfig, routes: R) {
+        super(cfg, routes);
 
         handleHistory(this);
 
@@ -50,8 +50,8 @@ export class Router<R extends RouterConfig<Meta>> extends BaseRouter<Meta, R> {
         });
     }
 
-    init<N extends keyof R, P extends string>(route: Route<P, Meta> | N, data: Data<P>) {
-        super.init(route, data);
+    initWithRoute<N extends keyof R, P extends string>(route: Route<P, Meta> | N, data: Data<P>) {
+        super.initWithRoute(route, data);
         this.cvhv = new HyperValue(this.currentView);
         this.routeName = this.hs.prop(this.cvhv, 'routeName');
         this.routeData = this.hs.prop(this.cvhv, 'data');
