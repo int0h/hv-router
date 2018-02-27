@@ -1,4 +1,4 @@
-import {HyperValue, scopes} from 'hv';
+import {HyperValue, scopes} from 'hyper-value';
 import {Component, Children, jsx} from 'hv-jsx';
 import {RouterCore as BaseRouter, Route, RouteView, route as baseRoute, RouteData, Data, RouteTable, handleHistory, RouterConfig} from 'router-core';
 
